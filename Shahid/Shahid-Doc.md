@@ -12,11 +12,17 @@
 #### Install Kubectl
 1. Run the following commands:
     ```
-    sudo apt-get update && sudo apt-get install -y apt-transport-https
+    sudo apt-get update && sudo apt-get install -y apt-transport-https curl
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
     echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
     sudo apt-get update
     sudo apt-get install -y kubectl
+    ```
+
+#### Install Docker
+1. Run the following command:
+    ```
+    sudo apt-get install docker
     ```
 
 #### Install Minikube
@@ -28,14 +34,15 @@
 
 2. Make sure Intel VT-x/EPT or AMD-V/RVI is enabled.
 
-#### Install Docker
-1. Run the following command:
-    ```
-    sudo apt-get install docker
-    ```
-
 
 #### Run Minikube
+0. Run the following commands:
+    ```
+    sudo chown -R $(id -u):$(id -g) ~/.minikube/*
+
+    sudo chown -R $(id -u):$(id -g) ~/.kube/*
+    ```
+
 1. Run this command to start Minikube
     ```
     minikube start
@@ -51,3 +58,6 @@
     ```
     minikube dashboard
     ```
+
+4. Visit your minikube dashboard:
+http://127.0.0.1:34191/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/#!/cluster?namespace=default
