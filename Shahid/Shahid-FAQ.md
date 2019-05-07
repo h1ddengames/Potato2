@@ -84,3 +84,115 @@ A lot of issues can be avoided just by having your host machine be a *nix operat
         ```
         then continue following the documentation from the beginning.
          
+#
+### Question #7: running kops create cluster states "SSH public key must be specified when running with AWS"
+- These are the causes of this issue:
+    1. This happens because kops requires a SSH public key.
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. Create the public key:
+            ```
+            kops create secret --name potato2.k8s.local sshpublickey admin -i C:\Users\yourusername/.ssh/id_rsa.pub
+            ```
+
+#
+### Question #8: running kops create secret states "error adding SSH public key: error fingerprinting SSH public key"
+- These are the causes of this issue:
+    1. This happens because you need to have a .ssh folder.
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. Run the following command to create the .ssh folder with a id_rsa public and private key:
+            ```
+            ssh-keygen
+            ```
+        2. Use all the default options and take note of where the key was saved to. Usually: 
+            ```
+            C:\Users\yourusername/.ssh/id_rsa.pub
+            ```
+
+#
+### Question #9 running kops get secret sates "State Store: Required value: Please set the --state flag or export KOPS_STATE_STORE."
+- These are the causes of this issue:
+    1. This happens because the value of KOPS_STATE_STORE was not properly set.
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. Run the following command:
+            ```
+            SET KOPS_STATE_STORE=s3://potato2-kops-state-store
+            ```
+
+#
+### Question #10 Logging into the kubernetes dashboard gives me errors saying "configmaps is forbidden: User cannot list..."
+- These are the causes of this issue:
+    1. This happens because the user you logged in as does not have the permissions to view the metrics listed.
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. make sure you are listing the admin key: ie. the username is after secrets keyword below
+        ```
+        kops get secrets admin --type secret -oplaintext
+        ```
+
+#
+### Question #11 How do I access the website on the cluster?
+
+#### Answer
+- This is done by doing the following:
+    1. Log onto the dashboard and click on Services then click on the service you want to access.
+    2. Click on the ip address under External endpoints.
+
+    OR
+
+    3. Run the following command:
+        ```
+        kubectl get svc
+        ```
+    
+    Note: No matter which option you take, you'll have to make sure there's an external ip.
+
+#
+### Question #12 Why do I not have an external IP on my deployment/service?
+- These are the causes of this issue:
+    1. This happens because you haven't exposed the port/ip.
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. Run the following command:
+            ```
+            kubectl expose deployment nginx-deployment --port 80 --type=LoadBalancer
+            ```
+        2. List all the services with the following command:
+            ```
+            kubectl get services -o wide
+            ```
+
+#
+### Question #13 I keep getting "server IP address could not be found" when trying to access the website hosted by the cluster.
+- These are the causes of this issue:
+    1. This happens when you are running the wrong command or looking at the wrong area on the dashboard.
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. See Questions 11 and 12 for the answer.
+
+#
+### Question #14
+- These are the causes of this issue:
+    1. This happens
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. By doing this
+
+
+#
+### Question #15
+- These are the causes of this issue:
+    1. This happens
+
+    #### Answer
+    - This is fixed by doing the following:
+        1. By doing this
