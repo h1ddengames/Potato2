@@ -62,13 +62,13 @@ A lot of issues can be avoided just by having your host machine be a *nix operat
 
     #### Answer
     - This is fixed by doing the following:
-        1. Chown the entire .minikube directory.
+        1. Change directory into the .minikube directory then chown the entire directory.
         ```
         sudo chown -R $(id -u):$(id -g) *
         ```
-        2. Chown the entier .kube directory.
+        2. Change directory into the .kube directory then chown the entire directory.
         ```
-
+        sudo chown -R $(id -u):$(id -g) *
         ```
 
 #

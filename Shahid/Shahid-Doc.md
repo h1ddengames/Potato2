@@ -174,101 +174,105 @@ then move it to the directory C:\Kube
     apiVersion: apps/v1
     kind: Deployment
     metadata:
-        name: my-nginx
+      name: nginx-deployment
+      labels:
+        app: nginx
     spec:
-        selector:
-            matchLabels:
-                run: my-nginx
         replicas: 2
+        selector:
+          matchLabels:
+            app: nginx
         template:
-            metadata:
-                labels:
-                    run: my-nginx
-            spec:
-                containers:
-                - name: my-nginx
-                image: nginx
-                ports:
-                - containerPort: 80
+          metadata:
+            labels:
+              app: nginx
+        spec:
+          containers:
+          - name: nginx
+            image: nginx:1.7.9
+            ports:
+            - containerPort: 80
     ```
+
 2. Create a mysql persistent volume file called mysql-pv.yaml and put in the following:
     ```
     kind: PersistentVolume
     apiVersion: v1
     metadata:
-        name: mysql-pv-volume
-        labels:
-            type: local
+      name: mysql-pv-volume
+      labels:
+        type: local
     spec:
-        storageClassName: manual
-        capacity:
-            storage: 20Gi
-        accessModes:
-            - ReadWriteOnce
-        hostPath:
-            path: "/mnt/data"
+      storageClassName: manual
+      capacity:
+        storage: 20Gi
+      accessModes:
+        - ReadWriteOnce
+      hostPath:
+        path: "/mnt/data"
     ---
     apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-        name: mysql-pv-claim
+      name: mysql-pv-claim
     spec:
-        storageClassName: manual
-        accessModes:
-            - ReadWriteOnce
-        resources:
-            requests:
-                storage: 20Gi
+      storageClassName: manual
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
     ```
-3. Create a mysql deploymennt file called mysql-deployment.yaml and put in the following:
+3. Create a mysql deployment file called mysql-deployment.yaml and put in the following:
     ```
     apiVersion: v1
     kind: Service
     metadata:
-        name: mysql
+      name: mysql
     spec:
-        ports:
-        - port: 3306
-        selector:
-            app: mysql
-        clusterIP: None
+      ports:
+      - port: 3306
+      selector:
+        app: mysql
+      clusterIP: None
     ---
     apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
     kind: Deployment
     metadata:
-        name: mysql
+      name: mysql
     spec:
-        selector:
-            matchLabels:
-                app: mysql
+      selector:
+        matchLabels:
+          app: mysql
         strategy:
-            type: Recreate
+          type: Recreate
         template:
-            metadata:
+          metadata:
             labels:
-                app: mysql
-        spec:
+              app: mysql
+          spec:
             containers:
             - image: mysql:5.6
-                name: mysql
-                env:
+              name: mysql
+              env:
                 # Use secret in real usage
             - name: MYSQL_ROOT_PASSWORD
-                value: password
+              value: password
             ports:
             - containerPort: 3306
-                name: mysql
+              name: mysql
             volumeMounts:
             - name: mysql-persistent-storage
-                mountPath: /var/lib/mysql
+              mountPath: /var/lib/mysql
             volumes:
             - name: mysql-persistent-storage
-            persistentVolumeClaim:
+              persistentVolumeClaim:
                 claimName: mysql-pv-claim
     ```
 #
 #### Using the dashboard to deploy an application and/or service
-
+1. Once you've logged onto the dashboard, click the button at the top right that says "+ Create"
+2. Enter the yaml presented in the above section then click OK. 
 
 #
 #### Destroy a cluster
